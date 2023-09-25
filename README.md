@@ -1,58 +1,40 @@
-# ![nf-core/fastquorum](docs/images/nf-core-fastquorum_logo_light.png#gh-light-mode-only) ![nf-core/fastquorum](docs/images/nf-core-fastquorum_logo_dark.png#gh-dark-mode-only)
+# ![bbglab/annotator](docs/images/nf-core-fastquorum_logo_light.png)
 
+<!-- 
 [![GitHub Actions CI Status](https://github.com/nf-core/fastquorum/workflows/nf-core%20CI/badge.svg)](https://github.com/nf-core/fastquorum/actions?query=workflow%3A%22nf-core+CI%22)
 [![GitHub Actions Linting Status](https://github.com/nf-core/fastquorum/workflows/nf-core%20linting/badge.svg)](https://github.com/nf-core/fastquorum/actions?query=workflow%3A%22nf-core+linting%22)
 [![AWS CI](https://img.shields.io/badge/CI%20tests-full%20size-FF9900?logo=Amazon%20AWS)](https://nf-co.re/fastquorum/results)
 [![Cite with Zenodo](http://img.shields.io/badge/DOI-10.5281/zenodo.XXXXXXX-1073c8)](https://doi.org/10.5281/zenodo.XXXXXXX)
+-->
 
 [![Nextflow](https://img.shields.io/badge/nextflow%20DSL2-%E2%89%A521.10.3-23aa62.svg)](https://www.nextflow.io/)
 [![run with conda](http://img.shields.io/badge/run%20with-conda-3EB049?logo=anaconda)](https://docs.conda.io/en/latest/)
 [![run with docker](https://img.shields.io/badge/run%20with-docker-0db7ed?logo=docker)](https://www.docker.com/)
 [![run with singularity](https://img.shields.io/badge/run%20with-singularity-1d355c.svg)](https://sylabs.io/docs/)
-[![Launch on Nextflow Tower](https://img.shields.io/badge/Launch%20%F0%9F%9A%80-Nextflow%20Tower-%234256e7)](https://tower.nf/launch?pipeline=https://github.com/nf-core/fastquorum)
+[![Launch on Nextflow Tower](https://img.shields.io/badge/Launch%20%F0%9F%9A%80-Nextflow%20Tower-%234256e7)](https://tower.nf/launch?pipeline=https://github.com/bbglab/deepUMIcaller)
 
 [![Get help on Slack](http://img.shields.io/badge/slack-nf--core%20%23fastquorum-4A154B?logo=slack)](https://nfcore.slack.com/channels/fastquorum)
-[![Follow on Twitter](http://img.shields.io/badge/twitter-%40nf__core-1DA1F2?logo=twitter)](https://twitter.com/nf_core)
-[![Watch on YouTube](http://img.shields.io/badge/youtube-nf--core-FF0000?logo=youtube)](https://www.youtube.com/c/nf-core)
+[![Follow on Twitter](http://img.shields.io/badge/twitter-%40bbglab-1DA1F2?logo=twitter)](https://twitter.com/bbglab)
+[![Watch on YouTube](http://img.shields.io/badge/youtube-bbglab-FF0000?logo=youtube)](https://www.youtube.com/@bcnbglab)
+
 
 ## Introduction
 
 <!-- TODO nf-core: Write a 1-2 sentence summary of what data the pipeline is for and what it does -->
 
-**nf-core/fastquorum** is a bioinformatics best-practice analysis pipeline to produce consensus reads using unique molecular indexes/barcodes (UMIs).
-The pipeline implements the [fgbio Best Practices FASTQ to Consensus Pipeline][fgbio-best-practices-link].
-fastquorum can produce consensus reads from single or multi UMI reads, and even [Duplex Sequencing][duplex-seq-link] reads.
+**bbglab/annotator** is a variant annotation pipeline using Ensembl VEP.
 
 The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool to run tasks across multiple compute infrastructures in a very portable manner. It uses Docker/Singularity containers making installation trivial and results highly reproducible. The [Nextflow DSL2](https://www.nextflow.io/docs/latest/dsl2.html) implementation of this pipeline uses one container per process which makes it much easier to maintain and update software dependencies. Where possible, these processes have been submitted to and installed from [nf-core/modules](https://github.com/nf-core/modules) in order to make them available to all nf-core pipelines, and to everyone within the Nextflow community!
 
-<!-- TODO nf-core: Add full-sized test dataset and amend the paragraph below if applicable -->
-
-On release, automated continuous integration tests run the pipeline on a full-sized dataset on the AWS cloud infrastructure. This ensures that the pipeline runs on AWS, has sensible resource allocation defaults set to run on real-world datasets, and permits the persistent storage of results to benchmark between pipeline releases and other analysis sources. The results obtained from the full-sized test can be viewed on the [nf-core website](https://nf-co.re/fastquorum/results).
 
 ## Pipeline summary
 
 ### Usage
 ```
-nextflow run main.nf -profile singularity --input assets/duplex_test_B5.csv
-            --ref_fasta /workspace/datasafe/prominent/refs/gatk/Homo_sapiens_assembly38.fasta
-            --targetsfile /workspace/projects/prominent/PILOT/refs/beds/xgen-exome-hyb-panel-v2-targets-hg38.bed
-            --outdir results/sample_run
+nextflow run main.nf -profile singularity --input assets/annotation_test.csv
+               --outdir results/annotation_results
 ```
 
-<!-- TODO nf-core: Fill in short bullet-pointed list of the default steps in the pipeline -->
-1. Read QC ([`FastQC`](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/))
-2. Fastq to BAM, extracting UMIs ([`fgbio FastqToBam`](http://fulcrumgenomics.github.io/fgbio/tools/latest/FastqToBam.html))
-3. Align ([`bwa mem`](https://github.com/lh3/bwa)), reformat ([`fgbio ZipperBam`](http://fulcrumgenomics.github.io/fgbio/tools/latest/ZipperBam.html)), and template-coordinate sort ([`samtools sort`](http://www.htslib.org/doc/samtools.html))
-4. Group reads by UMI ([`fgbio GroupReadsByUmi`](http://fulcrumgenomics.github.io/fgbio/tools/latest/GroupReadsByUmi.html))
-5. Call consensus reads
-   1. For [Duplex-Sequencing][duplex-seq-link] data
-      1. Call duplex consensus reads ([`fgbio CallDuplexConsensusReads`](http://fulcrumgenomics.github.io/fgbio/tools/latest/CallDuplexConsensusReads.html))
-      2. Collect duplex sequencing specific metrics ([`fgbio CollectDuplexSeqMetrics`](http://fulcrumgenomics.github.io/fgbio/tools/latest/CollectDuplexSeqMetrics.html))
-   2. For non-Duplex-Sequencing data:
-      1. Call molecular consensus reads ([`fgbio CallMolecularConsensusReads`](http://fulcrumgenomics.github.io/fgbio/tools/latest/CallMolecularConsensusReads.html))
-6. Align ([`bwa mem`](https://github.com/lh3/bwa))
-7. Filter consensus reads ([`fgbio FilterConsensusReads`](http://fulcrumgenomics.github.io/fgbio/tools/latest/FilterConsensusReads.html))
-8. Present QC for raw reads ([`MultiQC`](http://multiqc.info/))
 
 ## Quick Start
 
@@ -63,7 +45,7 @@ nextflow run main.nf -profile singularity --input assets/duplex_test_B5.csv
 3. Download the pipeline and test it on a minimal dataset with a single command:
 
    ```console
-   nextflow run nf-core/fastquorum -profile test,YOURPROFILE --outdir <OUTDIR>
+   nextflow run bbglab/annotator -profile test,YOURPROFILE --outdir <OUTDIR>
    ```
 
    Note that some form of configuration will be needed so that Nextflow knows how to fetch the required software. This is usually done in the form of a config profile (`YOURPROFILE` in the example command above). You can chain multiple config profiles in a comma-separated string.
@@ -78,33 +60,18 @@ nextflow run main.nf -profile singularity --input assets/duplex_test_B5.csv
    <!-- TODO nf-core: Update the example "typical command" below used to run the pipeline -->
 
    ```console
-   nextflow run nf-core/fastquorum --input samplesheet.csv --outdir <OUTDIR> --genome GRCh37 -profile <docker/singularity/podman/shifter/charliecloud/conda/institute>
+   nextflow run bbglab/annotator --input samplesheet.csv --outdir <OUTDIR> -profile <docker/singularity/podman/shifter/charliecloud/conda/institute>
    ```
 
-## Documentation
-
-The nf-core/fastquorum pipeline comes with documentation about the pipeline [usage](https://nf-co.re/fastquorum/usage), [parameters](https://nf-co.re/fastquorum/parameters) and [output](https://nf-co.re/fastquorum/output).
-m
-See also:
-
-1. The [fgbio Best Practise FASTQ -> Consensus Pipeline][fgbio-best-practices-link]
-2. [Read structures](https://github.com/fulcrumgenomics/fgbio/wiki/Read-Structures) as required in the input sample sheet.
 
 ## Credits
 
-nf-core/fastquorum was originally written by Nils Homer.
+bbglab/annotator was originally written by Ferriol Calvet.
 
 We thank the following people for their extensive assistance in the development of this pipeline:
 
-- [Nils Homer](https://github.com/nh13)
+- [Ferriol Calvet](https://github.com/FerriolCalvet)
 
-# Acknowledgements
-
-<p align="left">
-<a href="https://fulcrumgenomics.com">
-<img width="500" height="100" src="docs/images/Fulcrum.svg" alt="Fulcrum Genomics"/>
-</a>
-</p>
 
 ## Contributions and Support
 
@@ -129,5 +96,3 @@ You can cite the `nf-core` publication as follows:
 >
 > _Nat Biotechnol._ 2020 Feb 13. doi: [10.1038/s41587-020-0439-x](https://dx.doi.org/10.1038/s41587-020-0439-x).
 
-[fgbio-best-practices-link]: https://github.com/fulcrumgenomics/fgbio/blob/main/docs/best-practice-consensus-pipeline.md
-[duplex-seq-link]: https://en.wikipedia.org/wiki/Duplex_sequencing

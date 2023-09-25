@@ -78,7 +78,7 @@ include { CUSTOM_DUMPSOFTWAREVERSIONS                              } from '../mo
 */
 
 
-workflow DEEPUMICALLER {
+workflow ANNOTATOR {
 
     ch_versions = Channel.empty()
     ch_multiqc_files = Channel.empty()

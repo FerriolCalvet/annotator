@@ -12,30 +12,12 @@
                 "pattern": "^\\S+$",
                 "errorMessage": "Sample name must be provided and cannot contain spaces"
             },
-            // TODO
-            
-            "fastq_1": {
+            "variants_file": {
                 "type": "string",
-                "pattern": "^\\S+\\.f(ast)?q\\.gz$",
-                "errorMessage": "FastQ file for reads 1 must be provided, cannot contain spaces and must have extension '.fq.gz' or '.fastq.gz'"
+                "errorMessage": "variants_file must be provided, cannot contain spaces."
             },
-            "fastq_2": {
-                "errorMessage": "FastQ file for reads 2 cannot contain spaces and must have extension '.fq.gz' or '.fastq.gz'",
-                "anyOf": [
-                    {
-                        "type": "string",
-                        "pattern": "^\\S+\\.f(ast)?q\\.gz$"
-                    },
-                    {
-                        "type": "string",
-                        "maxLength": 0
-                    }
-                ]
-            },
-            "read_structure": {
-                "type": "string",
-                "pattern": "^.*$",
-                "errorMessage": "Read structure must be provided; For format, see: https://github.com/fulcrumgenomics/fgbio/wiki/Read-Structures"
+            "genome_ref_file": {
+                "errorMessage": "genome_ref_file cannot contain spaces.",
             }
         },
         "required": ["sample", "variants_file", "genome_ref_file"]

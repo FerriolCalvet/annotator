@@ -33,7 +33,7 @@ WorkflowMain.initialise(workflow, params, log)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-include { DEEPUMICALLER } from './workflows/deepumicaller'
+include { ANNOTATOR } from './workflows/annotator'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -46,7 +46,7 @@ include { DEEPUMICALLER } from './workflows/deepumicaller'
 // See: https://github.com/nf-core/rnaseq/issues/619
 //
 workflow {
-    DEEPUMICALLER ()
+    ANNOTATOR ()
 }
 
 /*
