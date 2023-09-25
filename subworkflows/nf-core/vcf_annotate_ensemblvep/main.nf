@@ -8,7 +8,6 @@ include { ENSEMBLVEP_VEP } from '../../../modules/nf-core/ensemblvep/vep/main'
 workflow VCF_ANNOTATE_ENSEMBLVEP {
     take:
     vcf               // channel: [ val(meta), vcf ]
-    fasta             //   value: fasta to use (optionnal)
     vep_genome        //   value: genome to use
     vep_species       //   value: species to use
     vep_cache_version //   value: cache version to use
@@ -18,7 +17,7 @@ workflow VCF_ANNOTATE_ENSEMBLVEP {
     main:
     ch_versions = Channel.empty()
 
-    ENSEMBLVEP_VEP(vcf, vep_genome, vep_species, vep_cache_version, vep_cache, fasta, vep_extra_files)
+    ENSEMBLVEP_VEP(vcf, vep_genome, vep_species, vep_cache_version, vep_cache, vep_extra_files)
     // TABIX_TABIX(ENSEMBLVEP_VEP.out.vcf)
 
     // ch_vcf_tbi = ENSEMBLVEP_VEP.out.vcf.join(TABIX_TABIX.out.tbi, failOnDuplicate: true, failOnMismatch: true)

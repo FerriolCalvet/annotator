@@ -8,12 +8,11 @@ process ENSEMBLVEP_VEP {
         'biocontainers/ensembl-vep:108.2--pl5321h4a94de4_0' }"
 
     input:
-    tuple val(meta), path(vcf)
+    tuple val(meta), path(vcf), path (fasta)
     val   genome
     val   species
     val   cache_version
     path  cache
-    path  fasta
     path  extra_files
 
     output:
@@ -35,13 +34,8 @@ process ENSEMBLVEP_VEP {
     def reference = fasta ? "--fasta $fasta" : ""
 
     """
-    # this is to ensure that we will be able to match the tab and vcf files afterwards
-    # the structure of the ID is the following:
-    # chr:pos_ref>alt
-    cat <(grep '#' $vcf) <(grep -v '#' $vcf | awk -F'\\t' '{OFS="\\t"; \$3=\$1":"\$2"_"\$4">"\$5; print}') > $vcf.4vep.vcf
-
     vep \\
-        -i $vcf.4vep.vcf \\
+        -i $vcf \\
         -o ${prefix}.${file_extension}.gz \\
         $args \\
         $compress_cmd \\

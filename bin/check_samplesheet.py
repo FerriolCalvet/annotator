@@ -26,16 +26,19 @@ class RowChecker:
     """
 
     VALID_FORMATS = (
-        ".fq.gz",
-        ".fastq.gz",
+        ".fa.gz",
+        ".fna.gz",
+        ".fasta.gz",
+        ".fa",
+        ".fna",
+        ".fasta",
     )
 
     def __init__(
         self,
         sample_col="sample",
-        first_col="fastq_1",
-        second_col="fastq_2",
-        read_structure_col="read_structure",
+        first_col="variants_file",
+        second_col="genome_ref_file",
         **kwargs,
     ):
         """
@@ -44,19 +47,16 @@ class RowChecker:
         Args:
             sample_col (str): The name of the column that contains the sample name
                 (default "sample").
+            ## TODO
             first_col (str): The name of the column that contains the first (or only)
                 FASTQ file path (default "fastq_1").
             second_col (str): The name of the column that contains the second (if any)
                 FASTQ file path (default "fastq_2").
-            read_structure (str): The name of the column that contains the read
-                structure for the given sample.
-
         """
         super().__init__(**kwargs)
         self._sample_col = sample_col
         self._first_col = first_col
         self._second_col = second_col
-        self._read_structure_col = read_structure_col
         self._seen = set()
         self.modified = []
 
@@ -72,7 +72,6 @@ class RowChecker:
         self._validate_sample(row)
         self._validate_first(row)
         self._validate_second(row)
-        self._validate_pair(row)
         self._seen.add((row[self._sample_col], row[self._first_col], row[self._second_col]))
         self.modified.append(row)
 
@@ -85,26 +84,13 @@ class RowChecker:
     def _validate_first(self, row):
         """Assert that the first FASTQ entry is non-empty and has the right format."""
         assert len(row[self._first_col]) > 0, "The first FASTQ file is required."
-        self._validate_fastq_format(row[self._first_col])
 
     def _validate_second(self, row):
         """Assert that the second FASTQ entry has the right format if it exists."""
         assert len(row[self._second_col]) > 0, "The second FASTQ file is required."
-        self._validate_fastq_format(row[self._second_col])
+        self._validate_fasta_format(row[self._second_col])
 
-    def _validate_pair(self, row):
-        """Assert that read pairs have the same file extension. Report pair status."""
-        assert (
-            Path(row[self._first_col]).suffixes[-2:] == Path(row[self._second_col]).suffixes[-2:]
-        ), "FASTQ pairs must have the same file extensions."
-
-    def _validate_read_structure(self, row):
-        """Assert that the second FASTQ entry has the right format if it exists."""
-        assert len(row[self._read_structure_col].split(' ')) == 2, (
-            "Two read structures must be provided."
-        )
-
-    def _validate_fastq_format(self, filename):
+    def _validate_fasta_format(self, filename):
         """Assert that a given filename has one of the expected FASTQ extensions."""
         assert any(filename.endswith(extension) for extension in self.VALID_FORMATS), (
             f"The FASTQ file has an unrecognized extension: {filename}\n"
@@ -186,7 +172,7 @@ def check_samplesheet(file_in, file_out):
             SAMPLE_SINGLE_UMI,SAMPLE_SINGLE_UMI.R1.fq.gz,SAMPLE_SINGLE_UMI.R2.fq.gz,12M+T +T
 
     """
-    required_columns = {"sample", "fastq_1", "fastq_2", "read_structure"}
+    required_columns = {"sample", "variants_file", "genome_ref_file"}
     # See https://docs.python.org/3.9/library/csv.html#id3 to read up on `newline=""`.
     with file_in.open(newline="") as in_handle:
         reader = csv.DictReader(in_handle, dialect=sniff_format(in_handle))
