@@ -22,7 +22,6 @@ workflow VCF_ANNOTATE_ALL {
     json_ann = Channel.empty()
     versions = Channel.empty()
 
-    // if (tools.split(',').contains('vep')) {
     VCF_ANNOTATE_ENSEMBLVEP(tab, vep_genome, vep_species, vep_cache_version, vep_cache, vep_extra_files)
 
     reports = reports.mix(VCF_ANNOTATE_ENSEMBLVEP.out.reports)

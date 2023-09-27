@@ -1,7 +1,7 @@
 {
     "$schema": "http://json-schema.org/draft-07/schema",
     "$id": "https://raw.githubusercontent.com/nf-core/fastquorum/master/nextflow_schema.json",
-    "title": "nf-core/fastquorum pipeline parameters",
+    "title": "bbglab/annotator pipeline parameters",
     "description": "fgbio Best Practices FASTQ to Consensus Pipeline",
     "type": "object",
     "definitions": {
@@ -35,117 +35,6 @@
                     "help_text": "Set this parameter to your e-mail address to get a summary e-mail with details of the run sent to you when the workflow exits. If set in your user config file (`~/.nextflow/config`) then you don't need to specify this on the command line for every run.",
                     "pattern": "^([a-zA-Z0-9_\\-\\.]+)@([a-zA-Z0-9_\\-\\.]+)\\.([a-zA-Z]{2,5})$"
                 }
-            }
-        },
-        "main_options": {
-            "title": "Main options",
-            "type": "object",
-            "description": "Most common options used for the pipeline",
-            "default": "",
-            "properties": {
-                "duplex_seq": {
-                    "type": "boolean",
-                    "fa_icon": "fas fa-dna",
-                    "description": "Enable when the input is duplex sequencing.",
-                    "help_text": "With this parameter flags in various tools are set for duplex sequencing data."
-                },
-                "umi_only": {
-                    "type": "boolean",
-                    "fa_icon": "fas fa-dna",
-                    "description": "Enable when the input is not duplex sequencing.",
-                    "help_text": "With this parameter, the workflow adapts to simple UMIs data."
-                }
-            }
-        },
-        "grouping": {
-            "title": "Read grouping options",
-            "type": "object",
-            "fa_icon": "fas fa-dna",
-            "description": "Options for when grouping reads by UMI",
-            "properties": {
-                "groupreadsbyumi_strategy": {
-                    "type": "string",
-                    "description": "Grouping strategy",
-                    "fa_icon": "fas fa-book",
-                    "help_text": "Grouping strategy for fgbio's GroupReadsByUmi."
-                },
-                "groupreadsbyumi_edits": {
-                    "type": "integer",
-                    "description": "Maximum number of edits",
-                    "fa_icon": "fas fa-book",
-                    "help_text": "Maximum number of allowable edits for fgbio's GroupReadsByUmi (options: Identity, Edit, Adjacency, Paired)."
-                }
-            }
-        },
-        "consensus_calling": {
-            "title": "Consensus reads options",
-            "type": "object",
-            "fa_icon": "fas fa-dna",
-            "description": "Options for when creating consensus reads",
-            "properties": {
-                "call_min_baseq": {
-                    "type": "integer",
-                    "description": "Minimum input base quality",
-                    "fa_icon": "fas fa-book",
-                    "help_text": "The minimum input base quality to use when calling a consensus for fgbio's CallMolecularConsensusReads/CallDuplexConsensusReads."
-                },
-                "call_min_reads": {
-                    "type": "string",
-                    "description": "Minimum reads to call a consensus",
-                    "fa_icon": "fas fa-book",
-                    "help_text": "The minimum reads to call a consensus for fgbio's CallMolecularConsensusReads."
-                },
-                "call_min_reads_duplex": {
-                    "type": "string",
-                    "description": "Minimum reads to call a consensus when using duplex reads",
-                    "fa_icon": "fas fa-book",
-                    "help_text": "The minimum reads to call a consensus for fgbio's CallDuplexConsensusReads."
-                }
-            }
-        },
-        "consensus_filtering": {
-            "title": "Consensus filtering options",
-            "type": "object",
-            "fa_icon": "fas fa-dna",
-            "description": "Options for when filtering consensus reads",
-            "properties": {
-                "filter_min_reads": {
-                    "type": "string",
-                    "description": "Minimum reads to keep a consensus",
-                    "fa_icon": "fas fa-book",
-                    "help_text": "The minimum reads to keep a consensus for fgbio's FilterConsensusReads."
-                },
-                "filter_min_baseq": {
-                    "type": "integer",
-                    "description": "Minimum consensus base quality",
-                    "fa_icon": "fas fa-book",
-                    "help_text": "The minimum consensus base quality to keep when calling a consensus for fgbio's FilterConsensusReads."
-                },
-                "filter_max_base_error_rate": {
-                    "type": "string",
-                    "description": "The maximum error rate for a single consensus base",
-                    "fa_icon": "fas fa-book",
-                    "help_text": "The maximum error rate for a single consensus base when filtering a consensus for fgbio's FilterConsensusReads."
-                },
-                "filter_max_read_error_rate": {
-                    "type": "string",
-                    "description": "The maximum error rate for a consensus read",
-                    "fa_icon": "fas fa-book",
-                    "help_text": "The maximum error rate for a consensus read to be kept when filtering using fgbio's FilterConsensusReads."
-                },
-                "maxN_prop_per_read": {
-                    "type": "number",
-                    "description": "The maximum proportion of Ns in a consensus read",
-                    "fa_icon": "fas fa-book",
-                    "help_text": "The maximum proportion of Ns in a consensus read for it to be kept when filtering using fgbio's FilterConsensusReads."
-                },
-                "filter_strand_agreement": {
-                    "type": "boolean",
-                    "description": "Require agreement of both strands in duplex consensus",
-                    "fa_icon": "fas fa-book",
-                    "help_text": "Require agreement of both strands to define each base of the duplex consensus."
-                }
-                
             }
         },
         "reference_genome_options": {
@@ -195,6 +84,56 @@
                     "description": "Species to use for Ensembl VEP.",
                     "fa_icon": "fas fa-book",
                     "help_text": "Use `homo_sapiens` when working with human data."
+                }
+            }
+        },
+        "ensembl_vep_options": {
+            "title": "Ensembl VEP options",
+            "type": "object",
+            "fa_icon": "fas fa-dna",
+            "description": "VEP related files required for the annotation.",
+            "properties": {
+                "vep_genome": {
+                    "type": "string",
+                    "description": "Genome assembly for Ensembl VEP.",
+                    "fa_icon": "fas fa-book",
+                    "help_text": "For the latest human genome assembly this should be: GRCh38."
+                },
+                "vep_species": {
+                    "type": "string",
+                    "description": "Species to use for Ensembl VEP.",
+                    "fa_icon": "fas fa-book",
+                    "help_text": "Use `homo_sapiens` when working with human data."
+                },
+                "vep_cache_version": {
+                    "type": "string",
+                    "description": "Ensembl VEP cache version.",
+                    "fa_icon": "fas fa-book",
+                    "help_text": "Make sure to also update the container to use. Otherwise leave 108."
+                },
+                "vep_out_format": {
+                    "type": "string",
+                    "description": "Ensembl VEP output format.",
+                    "fa_icon": "fas fa-book",
+                    "help_text": "tab or vcf"
+                },
+                "vep_params": {
+                    "type": "string",
+                    "description": "Additional parameters for running Ensembl VEP.",
+                    "fa_icon": "fas fa-book",
+                    "help_text": ""
+                },
+                "download_cache": {
+                    "type": "boolean",
+                    "description": "Do you want to download the cache? Activate it only if necessary.",
+                    "fa_icon": "fas fa-book",
+                    "help_text": "Do you want to download the cache? Activate it only if necessary."
+                },
+                "vep_cache": {
+                    "type": "string",
+                    "description": "Location of Ensembl VEP cache.",
+                    "fa_icon": "fas fa-book",
+                    "help_text": "Define a place to store the Ensembl VEP cache."
                 }
             }
         },
@@ -331,12 +270,6 @@
                     "fa_icon": "fas fa-palette",
                     "hidden": true
                 },
-                "multiqc_config": {
-                    "type": "string",
-                    "description": "Custom config file to supply to MultiQC.",
-                    "fa_icon": "fas fa-cog",
-                    "hidden": true
-                },
                 "tracedir": {
                     "type": "string",
                     "description": "Directory to keep pipeline Nextflow logs and reports.",
@@ -370,18 +303,6 @@
     "allOf": [
         {
             "$ref": "#/definitions/input_output_options"
-        },
-        {
-            "$ref": "#/definitions/main_options"
-        },
-        {
-            "$ref": "#/definitions/grouping"
-        },
-        {
-            "$ref": "#/definitions/consensus_calling"
-        },
-        {
-            "$ref": "#/definitions/consensus_filtering"
         },
         {
             "$ref": "#/definitions/reference_genome_options"

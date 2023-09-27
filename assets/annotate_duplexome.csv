@@ -1,0 +1,2 @@
+sample,variants_file,genome_ref_file
+Exome,/workspace/projects/prominent/analysis/omega/scripts/exome.regions_sites.4VEP.tsv,/workspace/datasafe/prominent/refs/dnaNexus/hs38DH.fa

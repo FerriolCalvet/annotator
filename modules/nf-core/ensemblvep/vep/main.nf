@@ -1,6 +1,13 @@
 process ENSEMBLVEP_VEP {
     tag "$meta.id"
-    label 'process_medium'
+    label 'process_high'
+    label 'process_superhigh_cpus'
+    label 'process_long'
+    
+    // conda "bioconda::ensembl-vep=110.1"
+    // container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+    //     'https://depot.galaxyproject.org/singularity/ensembl-vep:110.1--pl5321h2a3209d_0' :
+    //     'biocontainers/ensembl-vep:110.1--pl5321h2a3209d_0' }"
 
     conda "bioconda::ensembl-vep=108.2"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
